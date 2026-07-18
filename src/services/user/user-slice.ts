@@ -9,13 +9,13 @@ import {
 } from './user-actions';
 
 export interface UserState {
-  init: boolean;
+  isAuthChecked: boolean;
   loading: boolean;
   user: TUser | null;
 }
 
 const initialState: UserState = {
-  init: false,
+  isAuthChecked: false,
   loading: false,
   user: null
 };
@@ -27,8 +27,8 @@ export const userSlice = createSlice({
     setUser: (state, action: PayloadAction<TUser | null>) => {
       state.user = action.payload;
     },
-    setInit: (state, action: PayloadAction<boolean>) => {
-      state.init = action.payload;
+    setAuthChecked: (state, action: PayloadAction<boolean>) => {
+      state.isAuthChecked = action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -36,7 +36,7 @@ export const userSlice = createSlice({
   },
   selectors: {
     selectUser: (state) => state.user,
-    selectInit: (state) => state.init,
+    selectAuthChecked: (state) => state.isAuthChecked,
     selectLoading: (state) => state.loading
   },
   extraReducers: (builder) => {
@@ -45,7 +45,7 @@ export const userSlice = createSlice({
     });
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.init = true;
+      state.isAuthChecked = true;
       state.user = payload.user;
     });
     builder.addCase(loginUser.rejected, (state) => {
@@ -56,7 +56,7 @@ export const userSlice = createSlice({
     });
     builder.addCase(registerUser.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.init = true;
+      state.isAuthChecked = true;
       state.user = payload.user;
     });
     builder.addCase(registerUser.rejected, (state) => {
@@ -67,18 +67,20 @@ export const userSlice = createSlice({
     });
     builder.addCase(getUser.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.init = true;
+      state.isAuthChecked = true;
       state.user = payload.user;
     });
     builder.addCase(getUser.rejected, (state) => {
       state.loading = false;
+      state.isAuthChecked = true;
+      state.user = null;
     });
     builder.addCase(logoutUser.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(logoutUser.fulfilled, (state, { payload }) => {
+    builder.addCase(logoutUser.fulfilled, (state) => {
       state.loading = false;
-      state.init = false;
+      state.user = null;
     });
     builder.addCase(logoutUser.rejected, (state) => {
       state.loading = false;
@@ -96,7 +98,8 @@ export const userSlice = createSlice({
   }
 });
 
-export const { setInit, setLoading, setUser } = userSlice.actions;
-export const { selectUser, selectInit, selectLoading } = userSlice.selectors;
+export const { setAuthChecked, setLoading, setUser } = userSlice.actions;
+export const { selectUser, selectAuthChecked, selectLoading } =
+  userSlice.selectors;
 
 export default userSlice.reducer;

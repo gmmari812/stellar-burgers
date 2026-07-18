@@ -112,6 +112,10 @@ export const orderSlice = createSlice({
       state.orderData = null;
     }
   },
+  selectors: {
+    selectHistoryOrders: (state) => state.history.orders,
+    selectHistoryLoading: (state) => state.historyLoading
+  },
   extraReducers: (builder) => {
     builder.addCase(orderBurger.pending, (state) => {
       state.orderLoading = true;
@@ -168,5 +172,8 @@ export const {
   shiftIngredient,
   resetOrder
 } = orderSlice.actions;
+
+export const { selectHistoryOrders, selectHistoryLoading } =
+  orderSlice.selectors;
 
 export default orderSlice.reducer;
